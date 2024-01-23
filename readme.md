@@ -1,0 +1,1 @@
+Database Transactions: If your application requires a high level of data integrity (e.g., in a production environment), consider using database transactions to ensure that the user record is only updated if the Cloudinary upload is successful.

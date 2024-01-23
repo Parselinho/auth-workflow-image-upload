@@ -1,4 +1,3 @@
-const { default: mongoose } = require("mongoose");
 const CustomErr = require("../errors");
 const { User } = require("../models/User");
 const {
@@ -9,8 +8,6 @@ const {
 const cloudinary = require("cloudinary").v2;
 
 async function uploader(req, res, fieldToUpdate) {
-  const session = await mongoose.startSession();
-  session.startTransaction();
   try {
     if (!req.files) {
       throw new CustomErr.BadRequestError("No file uploaded");
@@ -37,14 +34,9 @@ async function uploader(req, res, fieldToUpdate) {
     const user = await User.findByIdAndUpdate(req.user.userId, update, {
       new: true,
     });
-
-    await session.commitTransaction();
     res.status(200).json({ [fieldToUpdate]: user[fieldToUpdate] });
   } catch (error) {
-    await session.abortTransaction();
     res.status(500).json({ msg: "Error during file upload" });
-  } finally {
-    session.endSession();
   }
 }
 
